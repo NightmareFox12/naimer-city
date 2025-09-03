@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
   //private vars
   private InputAction moveAction;
+  private InputAction sprintAction;
   private CharacterController controller;
 
   void Awake()
@@ -19,26 +20,35 @@ public class Player : MonoBehaviour
     controller = GetComponent<CharacterController>();
 
     moveAction = InputSystem.actions.FindAction("Move");
+    sprintAction = InputSystem.actions.FindAction("Sprint");
   }
 
   void Update()
   {
     Vector2 moveValue = moveAction.ReadValue<Vector2>();
 
-    // Convertimos el Vector2 en Vector3 (X y Z para moverse en el plano horizontal)
+    // Vector en el plano XZ
     Vector3 move = new(moveValue.x, 0, moveValue.y);
 
-    // Aplicamos el movimiento con velocidad
-    controller.Move(speed * Time.deltaTime * move);
+    // Normalizar para evitar velocidad extra en diagonal
+    if (move.magnitude > 1f)
+      move.Normalize();
+
+    // Convertir a dirección local del jugador
+    move = transform.TransformDirection(move);
+
+    // Calcular velocidad final
+    float currentSpeed = speed * (sprintAction.IsPressed() ? 2 : 1);
+
+    // Aplicar movimiento
+    controller.Move(move * currentSpeed * Time.deltaTime);
   }
-  void OnEnable()
-  {
-    moveAction?.Enable();
-  }
+
 
   void OnDisable()
   {
     // Deshabilitar la acción para evitar memory leaks
     moveAction.Disable();
+    sprintAction.Disable();
   }
 }
