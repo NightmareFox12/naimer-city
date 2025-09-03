@@ -1,3 +1,4 @@
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,8 @@ public class Player : MonoBehaviour
 
   void Awake()
   {
+    moveAction?.Enable();
+    sprintAction?.Enable();
   }
 
   void Start()
@@ -22,6 +25,10 @@ public class Player : MonoBehaviour
     moveAction = InputSystem.actions.FindAction("Move");
     sprintAction = InputSystem.actions.FindAction("Sprint");
   }
+
+  // Gravedad interna
+  private const float gravity = -9.81f;
+  private float verticalVelocity;
 
   void Update()
   {
@@ -40,8 +47,14 @@ public class Player : MonoBehaviour
     // Calcular velocidad final
     float currentSpeed = speed * (sprintAction.IsPressed() ? 2 : 1);
 
+    // --- GRAVITY --- 
+    if (controller.isGrounded && verticalVelocity < 0) verticalVelocity = -1f; // mantiene pegado al suelo
+    else verticalVelocity += gravity * Time.deltaTime;
+
+    move.y = verticalVelocity;
+
     // Aplicar movimiento
-    controller.Move(move * currentSpeed * Time.deltaTime);
+    controller.Move(currentSpeed * Time.deltaTime * move);
   }
 
 
