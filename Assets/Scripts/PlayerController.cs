@@ -49,7 +49,7 @@ public class Player : MonoBehaviour
     float currentSpeed = speed * (sprintAction.IsPressed() ? 2 : 1);
 
     // --- JUMP ---
-    if (jumpAction.WasPressedThisFrame() && controller.isGrounded) verticalVelocity = 4f;
+    if (jumpAction.WasPressedThisFrame() && controller.isGrounded) verticalVelocity = 3f;
     else
     {
       // --- GRAVITY --- 
