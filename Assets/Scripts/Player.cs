@@ -32,8 +32,6 @@ public class Player : MonoBehaviour
     sprintAction = InputSystem.actions.FindAction("Sprint");
   }
 
-  //TODO: agregar saltos
-
   void Update()
   {
     Vector2 moveValue = moveAction.ReadValue<Vector2>();
@@ -51,18 +49,13 @@ public class Player : MonoBehaviour
     float currentSpeed = speed * (sprintAction.IsPressed() ? 2 : 1);
 
     // --- JUMP ---
-    if (jumpAction.WasPressedThisFrame() && controller.isGrounded)
-    {
-      verticalVelocity = 4f;
-    }
+    if (jumpAction.WasPressedThisFrame() && controller.isGrounded) verticalVelocity = 4f;
     else
     {
       // --- GRAVITY --- 
       if (controller.isGrounded && verticalVelocity < 0) verticalVelocity = -1f; // mantiene pegado al suelo
       else verticalVelocity += gravity * Time.deltaTime;
     }
-
-
 
     move.y = verticalVelocity;
 
@@ -77,5 +70,6 @@ public class Player : MonoBehaviour
     // Deshabilitar la acción para evitar memory leaks
     moveAction.Disable();
     sprintAction.Disable();
+    jumpAction.Disable();
   }
 }
