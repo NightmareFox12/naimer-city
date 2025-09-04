@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
 
     // --- JUMP ---
-    if (jumpAction.WasPressedThisFrame() && chrController.isGrounded) velocity.y = 3f;
+    if (jumpAction.WasPressedThisFrame() && chrController.isGrounded) velocity.y = jumpForce;
     else
     {
       // --- GRAVITY --- 
@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
     // velocity.y += gravity * Time.deltaTime; // acumula caída
 
     // --- MOVE --- 
-    if (sprintAction.IsPressed()) moveSpeed = 6f;
+    if (sprintAction.IsPressed()) moveSpeed = 7f;
     else moveSpeed = 4f;
 
     chrController.Move((moveDir * moveSpeed + velocity) * Time.deltaTime);
