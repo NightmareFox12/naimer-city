@@ -537,9 +537,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d5ddd2159b64614989c2579a3a679db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  mainCamera: {fileID: 1559222303}
+  moveSpeed: 3
+  rotationSpeed: 12
   gravity: -9.81
-  verticalVelocity: 0
+  rayDistance: 1.5
+  rayOriginHeight: 0.8
+  rayLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1001 &639022028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1360,7 +1366,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a49163689968de44baf8361832cf533b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 489222868}
+  playerTransform: {fileID: 489222868}
+  pivotOffset: {x: 0, y: 1.6, z: 0}
+  distance: 7
+  minDistance: 2
+  maxDistance: 4
+  minPitch: -30
+  maxPitch: 75
+  mouseSensitivity: 0.1
+  rotationSmooth: 0.12
+  positionSmoothTime: 0.05
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  collisionRadius: 0.2
+  collisionBuffer: 0.1
 --- !u!4 &1630120777 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a774b1b72ac8efe41a60f896e94fcf3b, type: 3}

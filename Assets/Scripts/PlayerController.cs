@@ -1,79 +1,3 @@
-// using UnityEngine;
-// using UnityEngine.InputSystem;
-
-// public class Player : MonoBehaviour
-// {
-//   [Header("Movement")]
-//   public float speed = 5f;
-
-//   [Header("Gravity")]
-//   public float gravity = -9.81f;
-//   public float verticalVelocity;
-
-//   //private vars
-//   private InputAction moveAction;
-//   private InputAction jumpAction;
-//   private InputAction sprintAction;
-//   private CharacterController controller;
-
-//   void Awake()
-//   {
-//     moveAction?.Enable();
-//     sprintAction?.Enable();
-//     jumpAction?.Enable();
-//   }
-
-//   void Start()
-//   {
-//     controller = GetComponent<CharacterController>();
-
-//     moveAction = InputSystem.actions.FindAction("Move");
-//     jumpAction = InputSystem.actions.FindAction("Jump");
-//     sprintAction = InputSystem.actions.FindAction("Sprint");
-//   }
-
-//   void Update()
-//   {
-//     Vector2 moveValue = moveAction.ReadValue<Vector2>();
-
-//     // Vector en el plano XZ
-//     Vector3 move = new(moveValue.x, 0, moveValue.y);
-
-//     // Normalizar para evitar velocidad extra en diagonal
-//     if (move.magnitude > 1f) move.Normalize();
-
-//     // Convertir a dirección local del jugador
-//     move = transform.TransformDirection(move);
-
-//     // Calcular velocidad final
-//     float currentSpeed = speed * (sprintAction.IsPressed() ? 2 : 1);
-
-//     // --- JUMP ---
-//     if (jumpAction.WasPressedThisFrame() && controller.isGrounded) verticalVelocity = 3f;
-//     else
-//     {
-//       // --- GRAVITY --- 
-//       if (controller.isGrounded && verticalVelocity < 0) verticalVelocity = -1f; // mantiene pegado al suelo
-//       else verticalVelocity += gravity * Time.deltaTime;
-//     }
-
-//     move.y = verticalVelocity;
-
-//     // Aplicar movimiento
-//     controller.Move(currentSpeed * Time.deltaTime * move);
-
-//   }
-
-
-//   void OnDisable()
-//   {
-//     // Deshabilitar la acción para evitar memory leaks
-//     moveAction.Disable();
-//     sprintAction.Disable();
-//     jumpAction.Disable();
-//   }
-// }
-
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -84,9 +8,9 @@ public class PlayerController : MonoBehaviour
   public Transform mainCamera;
 
   [Header("Movement")]
-  public float moveSpeed = 3f;
-  public float rotationSpeed = 12f; // Suavizado de giro del personaje
-  Vector3 velocity;
+  public float moveSpeed = 4f;
+  public float rotationSpeed = 12f; //Character rotation smoothing
+  public float jumpForce = 4f;
   public float gravity = -9.81f;
 
   [Header("Detección (Raycast)")]
@@ -109,27 +33,37 @@ public class PlayerController : MonoBehaviour
   public event Action<RaycastHit> OnObstacleHit;
   public event Action OnNoObstacleHit;
 
-  private CharacterController chrController;
-  private InputAction moveAction;
 
+  // --- private vars ---
+  private CharacterController chrController;
+
+  //input actions
+  private InputAction moveAction;
+  private InputAction jumpAction;
+  private InputAction sprintAction;
+
+  Vector3 velocity;
 
   void Awake()
   {
+    moveAction?.Enable();
+    sprintAction?.Enable();
+    jumpAction?.Enable();
+
     chrController = GetComponent<CharacterController>();
   }
 
   void Start()
   {
-    var input = InputSystem.actions;
-    moveAction = input.FindAction("Move");
-    if (moveAction != null && !moveAction.enabled) moveAction.Enable();
+    moveAction = InputSystem.actions.FindAction("Move");
+    sprintAction = InputSystem.actions.FindAction("Sprint");
+    jumpAction = InputSystem.actions.FindAction("Jump");
+
+    // if (moveAction != null && !moveAction.enabled) moveAction.Enable();
   }
 
   void Update()
   {
-    if (mainCamera == null || moveAction == null) return;
-
-    // 1) Leer input (WASD o stick): x = A/D, y = W/S
     Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
     // 2) Ejes relativos a la cámara, proyectados al plano del suelo
@@ -145,16 +79,26 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDir = camForward * moveInput.y + camRight * moveInput.x;
     if (moveDir.sqrMagnitude > 1f) moveDir.Normalize(); // diagonales sin “boost”
 
-    // 4) Mover
-    chrController.Move(moveSpeed * Time.deltaTime * moveDir);
+
+    // --- JUMP ---
+    if (jumpAction.WasPressedThisFrame() && chrController.isGrounded) velocity.y = 3f;
+    else
+    {
+      // --- GRAVITY --- 
+      if (chrController.isGrounded && velocity.y < 0) velocity.y = -1f; // mantiene pegado al suelo
+      else velocity.y += gravity * Time.deltaTime;
+    }
 
     // 4) Gravedad
-    if (chrController.isGrounded && velocity.y < 0)
-      velocity.y = -2f; // lo mantiene pegado al suelo
+    // if (chrController.isGrounded && velocity.y < 0)
+    // velocity.y = -2f; // lo mantiene pegado al suelo
 
-    velocity.y += gravity * Time.deltaTime; // acumula caída
+    // velocity.y += gravity * Time.deltaTime; // acumula caída
 
-    // 5) Mover combinando horizontal y vertical
+    // --- MOVE --- 
+    if (sprintAction.IsPressed()) moveSpeed = 6f;
+    else moveSpeed = 4f;
+
     chrController.Move((moveDir * moveSpeed + velocity) * Time.deltaTime);
 
     // 5) Girar hacia la dirección de movimiento (estilo ZZZ)
@@ -187,5 +131,11 @@ public class PlayerController : MonoBehaviour
     Debug.DrawRay(origin, direction * rayDistance, Color.red);
   }
 
-
+  // Disable the action to prevent memory leaks
+  void OnDisable()
+  {
+    moveAction.Disable();
+    sprintAction.Disable();
+    jumpAction.Disable();
+  }
 }
