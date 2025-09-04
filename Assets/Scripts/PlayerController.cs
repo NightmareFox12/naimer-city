@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
   [Tooltip("Altura desde el suelo para lanzar el Raycast.")]
   public float rayOriginHeight = 0.8f;
-
+  
   [Tooltip("Capas que el Raycast puede detectar.")]
   public LayerMask rayLayers = ~0; // Por defecto, todas las capas
 
