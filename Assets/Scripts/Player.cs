@@ -1,4 +1,3 @@
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,6 +28,12 @@ public class Player : MonoBehaviour
   // Gravedad interna
   private const float gravity = -9.81f;
   private float verticalVelocity;
+
+  //TODO: eliminar tirones seguro tiene que ver con suavizar el movimiento
+  //TODO: corregir variables y volver publicas
+  //TODO: 
+  //TODO: agregar saltos
+
 
   void Update()
   {
