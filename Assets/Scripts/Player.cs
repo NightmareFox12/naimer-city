@@ -6,8 +6,13 @@ public class Player : MonoBehaviour
   [Header("Movement")]
   public float speed = 5f;
 
+  [Header("Gravity")]
+  public float gravity = -9.81f;
+  public float verticalVelocity;
+
   //private vars
   private InputAction moveAction;
+  private InputAction jumpAction;
   private InputAction sprintAction;
   private CharacterController controller;
 
@@ -15,6 +20,7 @@ public class Player : MonoBehaviour
   {
     moveAction?.Enable();
     sprintAction?.Enable();
+    jumpAction?.Enable();
   }
 
   void Start()
@@ -22,18 +28,11 @@ public class Player : MonoBehaviour
     controller = GetComponent<CharacterController>();
 
     moveAction = InputSystem.actions.FindAction("Move");
+    jumpAction = InputSystem.actions.FindAction("Jump");
     sprintAction = InputSystem.actions.FindAction("Sprint");
   }
 
-  // Gravedad interna
-  private const float gravity = -9.81f;
-  private float verticalVelocity;
-
-  //TODO: eliminar tirones seguro tiene que ver con suavizar el movimiento
-  //TODO: corregir variables y volver publicas
-  //TODO: 
   //TODO: agregar saltos
-
 
   void Update()
   {
@@ -43,8 +42,7 @@ public class Player : MonoBehaviour
     Vector3 move = new(moveValue.x, 0, moveValue.y);
 
     // Normalizar para evitar velocidad extra en diagonal
-    if (move.magnitude > 1f)
-      move.Normalize();
+    if (move.magnitude > 1f) move.Normalize();
 
     // Convertir a dirección local del jugador
     move = transform.TransformDirection(move);
@@ -52,14 +50,25 @@ public class Player : MonoBehaviour
     // Calcular velocidad final
     float currentSpeed = speed * (sprintAction.IsPressed() ? 2 : 1);
 
-    // --- GRAVITY --- 
-    if (controller.isGrounded && verticalVelocity < 0) verticalVelocity = -1f; // mantiene pegado al suelo
-    else verticalVelocity += gravity * Time.deltaTime;
+    // --- JUMP ---
+    if (jumpAction.WasPressedThisFrame() && controller.isGrounded)
+    {
+      verticalVelocity = 4f;
+    }
+    else
+    {
+      // --- GRAVITY --- 
+      if (controller.isGrounded && verticalVelocity < 0) verticalVelocity = -1f; // mantiene pegado al suelo
+      else verticalVelocity += gravity * Time.deltaTime;
+    }
+
+
 
     move.y = verticalVelocity;
 
     // Aplicar movimiento
     controller.Move(currentSpeed * Time.deltaTime * move);
+
   }
 
 
