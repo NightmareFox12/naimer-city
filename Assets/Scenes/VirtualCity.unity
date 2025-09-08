@@ -538,7 +538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 1559222303}
-  moveSpeed: 3
+  moveSpeed: 5
   rotationSpeed: 12
   jumpForce: 4
   gravity: -9.81
@@ -557,15 +557,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 09829a3b17c1b69489627d33ed4f8cfe, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.72
+      value: 9.42
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 09829a3b17c1b69489627d33ed4f8cfe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 09829a3b17c1b69489627d33ed4f8cfe, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -9.907
+      value: -12.7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 09829a3b17c1b69489627d33ed4f8cfe, type: 3}
       propertyPath: m_LocalRotation.w
@@ -688,7 +688,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: dd5a07aa4fa6f2d4e81bd207414492e1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.71
+      value: 4.44
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dd5a07aa4fa6f2d4e81bd207414492e1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1704,7 +1704,7 @@ Transform:
   m_GameObject: {fileID: 1639277438}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.14, y: -16.16, z: 6.22}
+  m_LocalPosition: {x: -16.02, y: -16.16, z: 6.22}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
